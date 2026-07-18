@@ -1,33 +1,52 @@
 elements.tesla_coil = {
-    color: ["#777777","#999999","#bbbbbb"],
+    color: ["#555555", "#888888", "#bbbbbb"],
     category: "machines",
     state: "solid",
+
+    name: "Tesla Coil",
+
     behavior: behaviors.WALL,
+
     conduct: 1,
-    insulate: false,
     hardness: 1,
+    insulate: false,
 
     tick: function(pixel) {
 
-        // Działa tylko gdy jest naładowana
-        if (pixel.charge) {
+        // lekki efekt grzania wokół cewki
+        for (let i = 0; i < 3; i++) {
 
-            for (let dx = -3; dx <= 3; dx++) {
-                for (let dy = -3; dy <= 3; dy++) {
+            let dx = Math.floor(Math.random() * 7) - 3;
+            let dy = Math.floor(Math.random() * 7) - 3;
 
-                    if (Math.random() < 0.08) {
+            let x = pixel.x + dx;
+            let y = pixel.y + dy;
 
-                        let x = pixel.x + dx;
-                        let y = pixel.y + dy;
+            if (isEmpty(x,y) && Math.random() < 0.35) {
 
-                        if (isEmpty(x, y)) {
-                            createPixel("electric", x, y);
-                        }
-                    }
+                createPixel("electric", x, y);
+
+            }
+
+            else if (!isEmpty(x,y)) {
+
+                let target = pixelMap[y][x];
+
+                if (target && target.temp !== undefined) {
+                    target.temp += 20;
                 }
+
             }
         }
 
-        doElectricity(pixel);
     }
 };
+
+
+// nazwa do wyszukiwarki
+elements.tesla_coil.desc =
+"Tesla Coil - generates electrical discharges and heat.";
+
+
+// ikonka w menu
+elements.tesla_coil.category = "machines";
