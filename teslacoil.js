@@ -1,3 +1,5 @@
+alert("MOD DZIAŁA");
+
 elements.tesla_coil = {
     color: ["#555555", "#888888", "#bbbbbb"],
     category: "machines",
