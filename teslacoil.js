@@ -13,32 +13,80 @@ elements.tesla_coil = {
 
     behavior: behaviors.WALL,
 
-    category: "special",
+    category: "machines",
     state: "solid",
-
     density: 7800,
+
     insulate: true,
 
-    desc: "Generuje wyładowania elektryczne.",
+    desc: "Tesla Coil - wymaga zasilania elektrycznego.",
+
+
+    reactions: {
+        electric: {
+            elem1: ["plasma", "fire"],
+            elem2: null
+        }
+    },
+
 
     tick: function(pixel) {
 
-        // 50% szansy na wyładowanie co klatkę
-        if (Math.random() < 0.5) {
-
-            var x = pixel.x + Math.floor(Math.random() * 9) - 4;
-            var y = pixel.y + Math.floor(Math.random() * 9) - 4;
+        var powered = false;
 
 
-            if (!outOfBounds(x,y) && isEmpty(x,y)) {
+        // sprawdzanie sąsiadów
+        for (var dx = -1; dx <= 1; dx++) {
+            for (var dy = -1; dy <= 1; dy++) {
 
-                createPixel("electric", x, y);
+                if (dx == 0 && dy == 0) continue;
 
-                console.log("Tesla fired!");
+                var x = pixel.x + dx;
+                var y = pixel.y + dy;
 
+
+                if (!outOfBounds(x,y)) {
+
+                    var other = pixelMap[y][x];
+
+
+                    if (other && other.charge) {
+                        powered = true;
+                    }
+
+                    // przewodniki bez electric
+                    if (other && elements[other.element] &&
+                        elements[other.element].conduct) {
+                        powered = true;
+                    }
+                }
             }
+        }
+
+
+        // jeżeli jest zasilona
+        if (powered) {
+
+            pixel.powered = true;
+
+
+            // tworzenie wyładowań
+            if (Math.random() < 0.2) {
+
+                var x = pixel.x + Math.floor(Math.random()*7)-3;
+                var y = pixel.y + Math.floor(Math.random()*7)-3;
+
+
+                if (!outOfBounds(x,y) && isEmpty(x,y)) {
+
+                    createPixel("electric",x,y);
+
+                }
+            }
+
         }
     }
 };
+
 
 console.log("TESLA COIL MOD LOADED");
