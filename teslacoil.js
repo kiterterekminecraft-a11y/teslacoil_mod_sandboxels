@@ -2,6 +2,7 @@ console.log("TESLA COIL MOD START");
 
 elements.tesla_coil = {
     name: "Tesla Coil",
+
     color: "#4b4b55",
 
     colorObject: {
@@ -11,8 +12,10 @@ elements.tesla_coil = {
     },
 
     behavior: behaviors.WALL,
+
     category: "special",
     state: "solid",
+
     density: 7800,
     insulate: true,
 
@@ -20,15 +23,18 @@ elements.tesla_coil = {
 
     tick: function(pixel) {
 
-        // szansa na wyładowanie
-        if (Math.random() < 0.2) {
+        // 50% szansy na wyładowanie co klatkę
+        if (Math.random() < 0.5) {
 
-            var x = pixel.x + Math.floor(Math.random()*11)-5;
-            var y = pixel.y + Math.floor(Math.random()*11)-5;
+            var x = pixel.x + Math.floor(Math.random() * 9) - 4;
+            var y = pixel.y + Math.floor(Math.random() * 9) - 4;
+
 
             if (!outOfBounds(x,y) && isEmpty(x,y)) {
 
                 createPixel("electric", x, y);
+
+                console.log("Tesla fired!");
 
             }
         }
