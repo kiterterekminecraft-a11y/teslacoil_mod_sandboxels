@@ -13,14 +13,26 @@ elements.tesla_coil = {
     behavior: behaviors.WALL,
     category: "special",
     state: "solid",
-
     density: 7800,
-
     insulate: true,
 
-    desc: "Generuje wyładowania elektryczne."
+    desc: "Generuje wyładowania elektryczne.",
+
+    tick: function(pixel) {
+
+        // szansa na wyładowanie
+        if (Math.random() < 0.2) {
+
+            var x = pixel.x + Math.floor(Math.random()*11)-5;
+            var y = pixel.y + Math.floor(Math.random()*11)-5;
+
+            if (!outOfBounds(x,y) && isEmpty(x,y)) {
+
+                createPixel("electric", x, y);
+
+            }
+        }
+    }
 };
 
 console.log("TESLA COIL MOD LOADED");
-
-// update
