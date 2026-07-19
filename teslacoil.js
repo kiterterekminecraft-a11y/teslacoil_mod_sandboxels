@@ -1,16 +1,28 @@
-// Tesla Coil mod for Sandboxels
-
 elements.tesla_coil = {
+    name: "Tesla Coil",
+
     color: "#4b4b55",
+
     behavior: behaviors.WALL,
-    category: "machines",
+
+    category: "special",
+
     state: "solid",
+
     density: 7800,
+
     insulate: true,
+
+    colorObject: {
+        r: 75,
+        g: 75,
+        b: 85
+    },
+
+    desc: "Generuje wyładowania elektryczne.",
 
     tick: function(pixel) {
 
-        // mała szansa na wyładowanie co tick
         if (Math.random() < 0.15) {
 
             var amount = Math.floor(Math.random() * 3) + 1;
@@ -28,13 +40,10 @@ elements.tesla_coil = {
                     pixel.y + Math.sin(angle) * distance
                 );
 
-                // zabezpieczenie przed wyjściem poza mapę
                 if (!outOfBounds(x,y) && isEmpty(x,y)) {
                     createPixel("electric", x, y);
                 }
             }
         }
-    },
-
-    desc: "Generuje wyładowania elektryczne."
+    }
 };
