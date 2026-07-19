@@ -6,26 +6,26 @@ elements.tesla_coil = {
     color: "#4b4b55",
 
     colorObject: {
-        r: 75,
-        g: 75,
-        b: 85
+        r:75,
+        g:75,
+        b:85
     },
 
     behavior: behaviors.WALL,
 
     category: "machines",
     state: "solid",
-    density: 7800,
 
+    density: 7800,
     insulate: true,
 
-    desc: "Wysokiego napięcia cewka Tesli. Wymaga zasilania.",
+    desc: "Tesla Coil wymagająca zewnętrznego zasilania.",
 
 
     reactions: {
         electric: {
-            elem1: ["plasma", "fire"],
-            elem2: null
+            elem1: "fire",
+            elem2: "plasma"
         }
     },
 
@@ -35,42 +35,32 @@ elements.tesla_coil = {
         var powered = false;
 
 
-        // sprawdzanie sąsiadów
-        for (var dx = -1; dx <= 1; dx++) {
-            for (var dy = -1; dy <= 1; dy++) {
+        // sprawdzanie rzeczy obok
+        for(var dx=-1; dx<=1; dx++) {
+            for(var dy=-1; dy<=1; dy++) {
 
-                if (dx === 0 && dy === 0) continue;
+                if(dx==0 && dy==0) continue;
+
 
                 var x = pixel.x + dx;
                 var y = pixel.y + dy;
 
 
-                if (outOfBounds(x,y)) continue;
+                if(outOfBounds(x,y)) continue;
 
 
                 var other = pixelMap[y][x];
 
 
-                if (!other) continue;
+                if(!other) continue;
 
 
-                // ignorujemy własny electric
-                if (other.element === "electric") {
-                    continue;
-                }
+                // ignorujemy electric
+                if(other.element == "electric") continue;
 
 
-                // przewodniki
-                if (
-                    elements[other.element] &&
-                    elements[other.element].conduct
-                ) {
-                    powered = true;
-                }
-
-
-                // elementy z ładunkiem
-                if (other.charge && other.element !== "electric") {
+                // tylko rzeczy, które mają charge
+                if(other.charge && other.charge > 0) {
                     powered = true;
                 }
 
@@ -78,33 +68,25 @@ elements.tesla_coil = {
         }
 
 
-        // TESLA WŁĄCZONA
-        if (powered) {
+        // jeżeli dostała zasilanie
+        if(powered) {
 
             pixel.color = "#ffff99";
 
 
-            // generowanie prądu
-            if (Math.random() < 0.25) {
-
+            if(Math.random() < 0.2) {
 
                 var x = pixel.x + Math.floor(Math.random()*7)-3;
                 var y = pixel.y + Math.floor(Math.random()*7)-3;
 
 
-                if (!outOfBounds(x,y) && isEmpty(x,y)) {
-
-                    createPixel("electric", x, y);
-
+                if(!outOfBounds(x,y) && isEmpty(x,y)) {
+                    createPixel("electric",x,y);
                 }
 
             }
 
-
-        } 
-        
-        // TESLA WYŁĄCZONA
-        else {
+        } else {
 
             pixel.color = "#4b4b55";
 
