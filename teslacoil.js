@@ -16,79 +16,93 @@ elements.tesla_coil = {
     category: "machines",
     state: "solid",
 
-    density: 7800,
-    insulate: true,
+    density:7800,
 
-    desc: "Tesla Coil wymagająca zewnętrznego zasilania.",
+    insulate:true,
 
-
-    reactions: {
-        electric: {
-            elem1: "fire",
-            elem2: "plasma"
-        }
-    },
+    desc:"Tesla Coil - po zasileniu tworzy plazmę i ogień.",
 
 
-    tick: function(pixel) {
+    tick:function(pixel) {
 
         var powered = false;
 
 
-        // sprawdzanie rzeczy obok
+        // sprawdzanie zasilenia
         for(var dx=-1; dx<=1; dx++) {
             for(var dy=-1; dy<=1; dy++) {
+
 
                 if(dx==0 && dy==0) continue;
 
 
-                var x = pixel.x + dx;
-                var y = pixel.y + dy;
+                var x=pixel.x+dx;
+                var y=pixel.y+dy;
 
 
                 if(outOfBounds(x,y)) continue;
 
 
-                var other = pixelMap[y][x];
+                var other=pixelMap[y][x];
 
 
                 if(!other) continue;
 
 
                 // ignorujemy electric
-                if(other.element == "electric") continue;
+                if(other.element=="electric") continue;
 
 
-                // tylko rzeczy, które mają charge
-                if(other.charge && other.charge > 0) {
-                    powered = true;
+                // zasilone elementy
+                if(other.charge && other.charge>0) {
+                    powered=true;
                 }
 
             }
         }
 
 
-        // jeżeli dostała zasilanie
+        // TESLA WŁĄCZONA
         if(powered) {
 
-            pixel.color = "#ffff99";
+
+            pixel.color="#ffff99";
 
 
-            if(Math.random() < 0.2) {
+            // tworzenie ognia i plazmy
+            if(Math.random()<0.2) {
 
-                var x = pixel.x + Math.floor(Math.random()*7)-3;
-                var y = pixel.y + Math.floor(Math.random()*7)-3;
+
+                var x=pixel.x+Math.floor(Math.random()*7)-3;
+                var y=pixel.y+Math.floor(Math.random()*7)-3;
 
 
                 if(!outOfBounds(x,y) && isEmpty(x,y)) {
-                    createPixel("electric",x,y);
+
+
+                    createPixel("plasma",x,y);
+
+
+                }
+
+
+                if(!outOfBounds(x,y+1) && isEmpty(x,y+1)) {
+
+
+                    createPixel("fire",x,y+1);
+
+
                 }
 
             }
 
-        } else {
 
-            pixel.color = "#4b4b55";
+        }
+
+        // WYŁĄCZONA
+        else {
+
+            pixel.color="#4b4b55";
 
         }
 
