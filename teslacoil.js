@@ -19,7 +19,7 @@ elements.tesla_coil = {
 
     insulate: true,
 
-    desc: "Tesla Coil - wymaga zasilania elektrycznego.",
+    desc: "Wysokiego napięcia cewka Tesli. Wymaga zasilania.",
 
 
     reactions: {
@@ -39,39 +39,54 @@ elements.tesla_coil = {
         for (var dx = -1; dx <= 1; dx++) {
             for (var dy = -1; dy <= 1; dy++) {
 
-                if (dx == 0 && dy == 0) continue;
+                if (dx === 0 && dy === 0) continue;
 
                 var x = pixel.x + dx;
                 var y = pixel.y + dy;
 
 
-                if (!outOfBounds(x,y)) {
-
-                    var other = pixelMap[y][x];
+                if (outOfBounds(x,y)) continue;
 
 
-                    if (other && other.charge) {
-                        powered = true;
-                    }
+                var other = pixelMap[y][x];
 
-                    // przewodniki bez electric
-                    if (other && elements[other.element] &&
-                        elements[other.element].conduct) {
-                        powered = true;
-                    }
+
+                if (!other) continue;
+
+
+                // ignorujemy własny electric
+                if (other.element === "electric") {
+                    continue;
                 }
+
+
+                // przewodniki
+                if (
+                    elements[other.element] &&
+                    elements[other.element].conduct
+                ) {
+                    powered = true;
+                }
+
+
+                // elementy z ładunkiem
+                if (other.charge && other.element !== "electric") {
+                    powered = true;
+                }
+
             }
         }
 
 
-        // jeżeli jest zasilona
+        // TESLA WŁĄCZONA
         if (powered) {
 
-            pixel.powered = true;
+            pixel.color = "#ffff99";
 
 
-            // tworzenie wyładowań
-            if (Math.random() < 0.2) {
+            // generowanie prądu
+            if (Math.random() < 0.25) {
+
 
                 var x = pixel.x + Math.floor(Math.random()*7)-3;
                 var y = pixel.y + Math.floor(Math.random()*7)-3;
@@ -79,12 +94,22 @@ elements.tesla_coil = {
 
                 if (!outOfBounds(x,y) && isEmpty(x,y)) {
 
-                    createPixel("electric",x,y);
+                    createPixel("electric", x, y);
 
                 }
+
             }
 
+
+        } 
+        
+        // TESLA WYŁĄCZONA
+        else {
+
+            pixel.color = "#4b4b55";
+
         }
+
     }
 };
 
